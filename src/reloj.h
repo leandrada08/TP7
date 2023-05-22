@@ -9,3 +9,11 @@ clk_t ClkCreate(int tics_por_segundo);
 bool ClkGetTime(clk_t reloj, uint8_t * hora, int size);
 
 bool ClkSetTime(clk_t reloj, const uint8_t * hora, int size);
+
+
+
+/** @brief
+ *
+ *
+*/
+void ClkTick(clk_t reloj);
