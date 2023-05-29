@@ -55,10 +55,18 @@ void ClkTick(clk_t reloj);
 bool ClkGetAlarma(clk_t reloj,uint8_t * hora, int size);
 
 /**
- * @brief 
+ * @brief  Funcion para configurar la hora de la alarma
  * 
  * @param reloj 
  * @param hora 
  * @param size 
  */
 void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size);
+
+/**
+ * @brief Funcion para activar o desactivar la hora
+ * 
+ * @param reloj Reloj del cual queremos configurar la alarma
+ * @param estado 0 si la queremos desactivar y 1 si la queremos activar
+ */
+void ClkActivateAlarma(clk_t reloj,bool estado);

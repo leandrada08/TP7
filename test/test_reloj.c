@@ -2,9 +2,7 @@
 #include "reloj.h"
 #include "main.c"
 
-// Comienza activada?
-// Desactivar alarma
-// Activar alarma
+
 // Suena la alarma
 
 
@@ -116,11 +114,37 @@ void test_incrementar_dia(void){
 
 // Ajustar alarma
 void test_ajustar_alarma(void){
-    static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; //Definimos la hora que esperamos
+    static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; 
     uint8_t hora[6] = {0xFF};
     ClkSetAlarma(reloj, ESPERADO, sizeof(ESPERADO));
-    ClkGetAlarma(reloj, hora, 6); //Usamos la funcion ClkGetTime que le tenemos que enviar el reloj que usaremos, el vector donde nos colcoara la hora y cuantas componentes tiene este
+    ClkGetAlarma(reloj, hora, 6); 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
-// Al configurar la alarma, comienza activa
+// Al configurar la alarma, comienza activa?
+void test_alarma_activa(void){
+    static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; 
+    uint8_t hora[6] = {0xFF};
+    ClkSetAlarma(reloj, ESPERADO, sizeof(ESPERADO));
+    TEST_ASSERT_TRUE(ClkGetAlarma(reloj, hora, 6));
+}
+
+// Desactivar alarma
+void test_alarma_desactivar(void){
+    static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; 
+    uint8_t hora[6] = {0xFF};
+    ClkSetAlarma(reloj, ESPERADO, sizeof(ESPERADO));
+    ClkActivateAlarma(reloj,0);
+    TEST_ASSERT_FALSE(ClkGetAlarma(reloj, hora, 6));
+}
+
+// Activar alarma
+void test_alarma_activar(void){
+    static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; 
+    uint8_t hora[6] = {0xFF};
+    ClkSetAlarma(reloj, ESPERADO, sizeof(ESPERADO));
+    ClkActivateAlarma(reloj,0);
+    TEST_ASSERT_FALSE(ClkGetAlarma(reloj, hora, 6));
+    ClkActivateAlarma(reloj,1);
+    TEST_ASSERT_TRUE(ClkGetAlarma(reloj, hora, 6));
+}

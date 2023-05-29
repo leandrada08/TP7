@@ -97,3 +97,12 @@ void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size){
     memcpy(reloj->alarma, hora, size);
     reloj->alarma_valida = true;
 }
+
+void ClkActivateAlarma(clk_t reloj,bool estado){
+    if(estado==0){
+        reloj->alarma_valida = false;
+    }
+    if(estado==1){
+        reloj->alarma_valida = true;
+    }
+}
