@@ -42,3 +42,23 @@ bool ClkSetTime(clk_t reloj, const uint8_t * hora, int size);
  *
 */
 void ClkTick(clk_t reloj);
+
+/**
+ * @brief Funcion para ver la hora de la alarma
+ * 
+ * @param reloj 
+ * @param hora 
+ * @param sizeof 
+ * @return true Si la alarma esta activada(si ya fue configurada)
+ * @return false Si la alarma esta desactiva(si no fue configurada)
+ */
+bool ClkGetAlarma(clk_t reloj,uint8_t * hora, int size);
+
+/**
+ * @brief 
+ * 
+ * @param reloj 
+ * @param hora 
+ * @param size 
+ */
+void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size);

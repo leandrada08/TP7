@@ -1,5 +1,11 @@
 #include "unity.h"
 #include "reloj.h"
+#include "main.c"
+
+// Comienza activada?
+// Desactivar alarma
+// Activar alarma
+// Suena la alarma
 
 
 #define TICS_POR_SEGUNDO 5
@@ -107,3 +113,14 @@ void test_incrementar_dia(void){
     TEST_ASSERT_TRUE(ClkGetTime(reloj, hora, sizeof(hora)));
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, sizeof(ESPERADO));
 }
+
+// Ajustar alarma
+void test_ajustar_alarma(void){
+    static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; //Definimos la hora que esperamos
+    uint8_t hora[6] = {0xFF};
+    ClkSetAlarma(reloj, ESPERADO, sizeof(ESPERADO));
+    ClkGetAlarma(reloj, hora, 6); //Usamos la funcion ClkGetTime que le tenemos que enviar el reloj que usaremos, el vector donde nos colcoara la hora y cuantas componentes tiene este
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
+}
+
+// Al configurar la alarma, comienza activa

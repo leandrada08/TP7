@@ -4,7 +4,10 @@ struct clk_s{
     uint8_t hora_actual[6];
     uint8_t tics;
     uint8_t tics_por_segundo;
-    bool valida;
+    bool hora_valida;
+
+    uint8_t alarma[6];
+    bool alarma_valida;
 };
 
 static struct clk_s instances;
@@ -17,8 +20,9 @@ clk_t ClkCreate(int tics_por_segundo){
 
 bool ClkGetTime(clk_t reloj, uint8_t * hora, int size){
     memcpy(hora ,reloj->hora_actual, size);
-    return reloj->valida;
+    return reloj->hora_valida;
 }
+
 
 bool ClkSetTime(clk_t reloj, const uint8_t * hora, int size){
     bool mal=0;
@@ -36,7 +40,7 @@ bool ClkSetTime(clk_t reloj, const uint8_t * hora, int size){
     }
     if(mal==0){
         memcpy(reloj->hora_actual, hora, size);
-        reloj->valida = true;
+        reloj->hora_valida = true;
         return true;
     }else{
         return false;
@@ -80,4 +84,16 @@ void ClkTick(clk_t reloj){
     }
 
 
+}
+
+
+bool ClkGetAlarma(clk_t reloj,uint8_t * hora, int size){
+    memcpy(hora ,reloj->alarma, size);
+    return reloj->alarma_valida;
+}
+
+
+void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size){
+    memcpy(reloj->alarma, hora, size);
+    reloj->alarma_valida = true;
 }
