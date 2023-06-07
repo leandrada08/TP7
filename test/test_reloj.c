@@ -4,10 +4,6 @@
 
 
 /*
-• La librería deberá proporcionar una función para habilitar y deshabilitar la alarma.
-• La librería deberá proporcionar una función para consultar si la alarma está, o no, habilitada.
-• La librería deberá generar un evento cuando la alarma esté habilitada y además hora actual
-coincida con la hora de la alarma.
 • La librería deberá proporcionar una función para posponer la alarma una cantidad arbitraria
 de minutos.
 • La librería deberá manejar todas las horas como un arreglo de bytes en formato BCD sin
@@ -137,9 +133,6 @@ void test_ajustar_alarma(void){
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
-//Modificar desde aqui
-
-/*
 // Al configurar la alarma, comienza activa?
 void test_alarma_activa(void){
     static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; 
@@ -165,9 +158,9 @@ void test_alarma_activar(void){
     ClkActivateAlarma(reloj,0);
     TEST_ASSERT_FALSE(ClkGetAlarma(reloj, hora, 6));
     ClkActivateAlarma(reloj,1);
-    TEST_ASSERT_TRUE(ClkGetAlarma(reloj, hora, 6));
+    TEST_ASSERT_TRUE(ClkGetAlarma(reloj, hora, 6)); 
 }
-*/
+
 
 
 // Suena la alarma si son iguales
@@ -185,5 +178,16 @@ void test_alarma_no_suena(void){
     ocurrio_evento_suena=false;
     ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
     SimulateSecond(1, ClkTick(reloj));
+    TEST_ASSERT_FALSE(ocurrio_evento_suena);
+}
+
+
+// Alarma no suena si esta desactivada
+void test_alarma_no_suena_desactivada(void){
+    static const uint8_t Alarma[]={1,2,3,5,0,0};
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    ClkActivateAlarma(reloj,0);
+    SimulateSecond(60, ClkTick(reloj));
     TEST_ASSERT_FALSE(ocurrio_evento_suena);
 }

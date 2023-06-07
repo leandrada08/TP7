@@ -10,7 +10,7 @@ struct clk_s{
     bool hora_valida;
 
     uint8_t alarma[TAMANIO_VECTOR_TIEMPO];
-    //bool alarma_valida;
+    bool alarma_valida;
 
     suena_alarma_t gestor_alarma;
 };
@@ -27,7 +27,7 @@ void VerificarAlarma(clk_t reloj);
 
 
 void VerificarAlarma(clk_t reloj){
-    if(reloj->hora_valida!=0){
+    if(reloj->hora_valida!=0 && reloj->alarma_valida!=0){
         if(memcmp(reloj->hora_actual,reloj->alarma, TAMANIO_VECTOR_TIEMPO)==0){
             printf("%i",0);
             reloj->gestor_alarma(reloj);
@@ -82,13 +82,11 @@ void ClkTick(clk_t reloj){
     reloj->tics++;
     if(reloj->tics==reloj->tics_por_segundo){
         reloj->hora_actual[5]++;
-        //VerificarAlarma(reloj);
         reloj->tics=0;
     }
     if(reloj->hora_actual[5]==10){
         reloj->hora_actual[5]=0;
         reloj->hora_actual[4]++;
-        //VerificarAlarma(reloj);
     }
     if(reloj->hora_actual[4]==6){
         reloj->hora_actual[4]=0;
@@ -123,7 +121,7 @@ void ClkTick(clk_t reloj){
 
 bool ClkGetAlarma(clk_t reloj,uint8_t * hora, int size){
     memcpy(hora ,reloj->alarma, size);
-    return 1;
+    return reloj->alarma_valida;
 }
 
 
@@ -131,11 +129,9 @@ bool ClkGetAlarma(clk_t reloj,uint8_t * hora, int size){
 
 void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size){
     memcpy(reloj->alarma, hora, size);
-    //reloj->alarma_valida = true;
+    reloj->alarma_valida = true;
 }
 
-
-/*
 
 void ClkActivateAlarma(clk_t reloj,bool estado){
     if(estado==0){
@@ -145,5 +141,3 @@ void ClkActivateAlarma(clk_t reloj,bool estado){
         reloj->alarma_valida = true;
     }
 }
-
-*/
