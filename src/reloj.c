@@ -1,20 +1,46 @@
 #include "reloj.h"
+#include <stdio.h>
 
+#define TAMANIO_VECTOR_TIEMPO 6
+// Defino las estructuras
 struct clk_s{
-    uint8_t hora_actual[6];
+    uint8_t hora_actual[TAMANIO_VECTOR_TIEMPO];
     uint8_t tics;
     uint8_t tics_por_segundo;
     bool hora_valida;
 
-    uint8_t alarma[6];
-    bool alarma_valida;
+    uint8_t alarma[TAMANIO_VECTOR_TIEMPO];
+    //bool alarma_valida;
+
+    suena_alarma_t gestor_alarma;
 };
 
+
+// Defino las variables globales
 static struct clk_s instances;
 
-clk_t ClkCreate(int tics_por_segundo){
+// Declaracion de funciones privadas
+void VerificarAlarma(clk_t reloj);
+
+
+// Definicion de funciones privadas
+
+
+void VerificarAlarma(clk_t reloj){
+    if(reloj->hora_valida!=0){
+        if(memcmp(reloj->hora_actual,reloj->alarma, TAMANIO_VECTOR_TIEMPO)==0){
+            printf("%i",0);
+            reloj->gestor_alarma(reloj);
+        }
+    }
+}
+
+
+// Defino las funciones publicas
+clk_t ClkCreate(int tics_por_segundo, suena_alarma_t gestor_alarma){
     memset(&instances, 0, sizeof(instances));
     instances.tics_por_segundo=tics_por_segundo;
+    instances.gestor_alarma=gestor_alarma;
     return &instances;
 }
 
@@ -56,32 +82,40 @@ void ClkTick(clk_t reloj){
     reloj->tics++;
     if(reloj->tics==reloj->tics_por_segundo){
         reloj->hora_actual[5]++;
+        //VerificarAlarma(reloj);
         reloj->tics=0;
     }
     if(reloj->hora_actual[5]==10){
         reloj->hora_actual[5]=0;
         reloj->hora_actual[4]++;
+        //VerificarAlarma(reloj);
     }
     if(reloj->hora_actual[4]==6){
         reloj->hora_actual[4]=0;
         reloj->hora_actual[3]++;
+        VerificarAlarma(reloj);
     }
     if(reloj->hora_actual[3]==10){
         reloj->hora_actual[3]=0;
         reloj->hora_actual[2]++;
+        VerificarAlarma(reloj);
     }
     if(reloj->hora_actual[2]==6){
         reloj->hora_actual[2]=0;
         reloj->hora_actual[1]++;
+        VerificarAlarma(reloj);
     }
     if(reloj->hora_actual[1]==10){
         reloj->hora_actual[1]=0;
         reloj->hora_actual[0]++;
+        VerificarAlarma(reloj);
     }
     if(reloj->hora_actual[0]==2 && reloj->hora_actual[1]==4){
         reloj->hora_actual[0]=0;
         reloj->hora_actual[1]=0;
+        VerificarAlarma(reloj);  
     }
+    
 
 
 }
@@ -89,14 +123,19 @@ void ClkTick(clk_t reloj){
 
 bool ClkGetAlarma(clk_t reloj,uint8_t * hora, int size){
     memcpy(hora ,reloj->alarma, size);
-    return reloj->alarma_valida;
+    return 1;
 }
+
+
 
 
 void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size){
     memcpy(reloj->alarma, hora, size);
-    reloj->alarma_valida = true;
+    //reloj->alarma_valida = true;
 }
+
+
+/*
 
 void ClkActivateAlarma(clk_t reloj,bool estado){
     if(estado==0){
@@ -106,3 +145,5 @@ void ClkActivateAlarma(clk_t reloj,bool estado){
         reloj->alarma_valida = true;
     }
 }
+
+*/

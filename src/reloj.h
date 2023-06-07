@@ -4,14 +4,15 @@
 
 typedef struct clk_s * clk_t;
 
-
+typedef void(*suena_alarma_t)(clk_t);
 
 /** @brief Funcion para crear un reloj
  * @param tics_por_segundo: Cuantos tics del micro seran un segundo en nuestro reloj
+ * @param suena_alarma_t 
  * @return Nos devuelve un puntero al reloj creado
  * Esta funcion nos inicia un espacio del tamanio clk_s con 0
 */
-clk_t ClkCreate(int tics_por_segundo);
+clk_t ClkCreate(int tics_por_segundo,suena_alarma_t gestor_alarma);
 
 
 /** @brief Funcion para ver la hora de un reloj
@@ -36,11 +37,13 @@ bool ClkSetTime(clk_t reloj, const uint8_t * hora, int size);
 
 
 
-/** @brief Funcion para contar segundos,
+/**
+ * @brief Funcion para contar segundo, en esta funcion tambien verifico si la alarma suena
  * Le mandamos el reloj y nos cuenta 1 segundo en el reloj dado
- * @param: clk_t reloj
- *
-*/
+ * 
+ * @param reloj Reloj del cual tenemos que contar un tick
+
+ */
 void ClkTick(clk_t reloj);
 
 /**
@@ -70,3 +73,4 @@ void ClkSetAlarma(clk_t reloj,const uint8_t * hora, int size);
  * @param estado 0 si la queremos desactivar y 1 si la queremos activar
  */
 void ClkActivateAlarma(clk_t reloj,bool estado);
+

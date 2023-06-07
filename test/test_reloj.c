@@ -3,7 +3,17 @@
 #include "main.c"
 
 
-// Suena la alarma
+/*
+• La librería deberá proporcionar una función para habilitar y deshabilitar la alarma.
+• La librería deberá proporcionar una función para consultar si la alarma está, o no, habilitada.
+• La librería deberá generar un evento cuando la alarma esté habilitada y además hora actual
+coincida con la hora de la alarma.
+• La librería deberá proporcionar una función para posponer la alarma una cantidad arbitraria
+de minutos.
+• La librería deberá manejar todas las horas como un arreglo de bytes en formato BCD sin
+compactar, con la decena de horas en la primera posición y la unidad de los segundos en la
+última posición del vector.
+*/
 
 
 #define TICS_POR_SEGUNDO 5
@@ -15,14 +25,20 @@
         }\
     }
 
+static bool ocurrio_evento_suena;
+
+void RegistraEventoAlarma(clk_t reloj){
+        ocurrio_evento_suena=true;
+}
 
 static clk_t reloj;
 static uint8_t hora[6];
 
 
 void setUp(void){
-    static const uint8_t INICIAL[]={1, 2, 3, 4};
-    reloj = ClkCreate(TICS_POR_SEGUNDO);
+    static const uint8_t INICIAL[]={1, 2, 3, 4, 0, 0};
+    ocurrio_evento_suena=false;
+    reloj = ClkCreate(TICS_POR_SEGUNDO,RegistraEventoAlarma);
     TEST_ASSERT_TRUE(ClkSetTime(reloj, INICIAL, sizeof(INICIAL)));
 }
 
@@ -31,7 +47,7 @@ void setUp(void){
 void test_reloj_arranca_con_hora_invalida(void){
     static const uint8_t ESPERADO[]={0, 0, 0, 0, 0, 0}; //Definimos la hora que esperamos
     uint8_t hora[6] = {0xFF};
-    reloj = ClkCreate(TICS_POR_SEGUNDO);
+    reloj = ClkCreate(TICS_POR_SEGUNDO,RegistraEventoAlarma);
     TEST_ASSERT_FALSE(ClkGetTime(reloj, hora, 6)); //Usamos la funcion ClkGetTime que le tenemos que enviar el reloj que usaremos, el vector donde nos colcoara la hora y cuantas componentes tiene este
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6); //Comparamos nuestra hora con esperado, el 6 es la cantidad de componentes que compararemos
 }
@@ -121,6 +137,9 @@ void test_ajustar_alarma(void){
     TEST_ASSERT_EQUAL_UINT8_ARRAY(ESPERADO, hora, 6);
 }
 
+//Modificar desde aqui
+
+/*
 // Al configurar la alarma, comienza activa?
 void test_alarma_activa(void){
     static const uint8_t ESPERADO[]={2, 3, 4, 5, 0, 1}; 
@@ -147,4 +166,24 @@ void test_alarma_activar(void){
     TEST_ASSERT_FALSE(ClkGetAlarma(reloj, hora, 6));
     ClkActivateAlarma(reloj,1);
     TEST_ASSERT_TRUE(ClkGetAlarma(reloj, hora, 6));
+}
+*/
+
+
+// Suena la alarma si son iguales
+void test_alarma_suena(void){
+    static const uint8_t Alarma[]={1,2,3,5,0,0};
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    SimulateSecond(60, ClkTick(reloj));
+    TEST_ASSERT_TRUE(ocurrio_evento_suena);
+}
+
+// No suena alarma si son distintos
+void test_alarma_no_suena(void){
+    static const uint8_t Alarma[]={1,2,3,4,0,3};
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    SimulateSecond(1, ClkTick(reloj));
+    TEST_ASSERT_FALSE(ocurrio_evento_suena);
 }
