@@ -81,8 +81,9 @@ void ClkActivateAlarma(clk_t reloj,bool estado);
  * 
  * @param reloj : Reloj al cual se le desea posponer la alarma
  * @param posponer  : Minutos que queremos posponer la alarma
+ * @param estado : Estado de la alarma
  */
-void PosponerAlarma(clk_t reloj,uint8_t posponer);
+void PosponerAlarma(clk_t reloj,uint8_t posponer, bool estado);
 
 /**
  * @brief Funcion para que la alarma deje de sonar

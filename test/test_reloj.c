@@ -3,19 +3,6 @@
 #include "main.c"
 
 
-/*
-Requerimientos:
-• La librería deberá proporcionar una función para posponer la alarma una cantidad arbitraria
-de minutos.
-• La librería deberá manejar todas las horas como un arreglo de bytes en formato BCD sin
-compactar, con la decena de horas en la primera posición y la unidad de los segundos en la
-última posición del vector.
-Pruebas:
-- La funcion para porponer alarma, frena el buzzer
-- La funcion posponer alarma solo se activa cuando esta sonando la alarma
-*/
-
-
 #define TICS_POR_SEGUNDO 5
 
 #define SimulateSecond(VALUE,funcion2)\
@@ -221,7 +208,7 @@ void test_alarma_pospone_n_minutos(void){
     ocurrio_evento_suena=false;
     ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
     SimulateSecond(60, ClkTick(reloj));
-    PosponerAlarma(reloj,posponer);
+    PosponerAlarma(reloj,posponer,ocurrio_evento_suena);
     ClkGetAlarma(reloj,hora, 6); 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(hora, Alarma_pospuesta, sizeof(Alarma));
 }
@@ -236,8 +223,37 @@ void test_alarma_pospone_no_modifica(void){
     ocurrio_evento_suena=false;
     ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
     SimulateSecond(60, ClkTick(reloj));
-    PosponerAlarma(reloj,posponer);
+    PosponerAlarma(reloj,posponer,ocurrio_evento_suena);
     SimulateSecond(60*11, ClkTick(reloj));
     ClkGetAlarma(reloj,hora, 6); 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(hora, Alarma, sizeof(Alarma));
 }
+
+
+// La funcion para porponer alarma, frena el buzzer
+void test_alarma_pospone_frena_buzzer(void){
+    static const uint8_t Alarma[]={1,2,3,5,0,0};
+    //uint8_t hora[6] = {0xFF};
+    uint8_t posponer = 10;
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    SimulateSecond(60, ClkTick(reloj));
+    TEST_ASSERT_TRUE(ocurrio_evento_suena);
+    PosponerAlarma(reloj,posponer, ocurrio_evento_suena);
+    TEST_ASSERT_FALSE(ocurrio_evento_suena);
+}
+
+
+// La funcion posponer alarma solo se activa cuando esta sonando la alarma
+void test_alarma_pospone_solo_sonando(void){
+    static const uint8_t Alarma[]={1,2,3,5,0,0};
+    //uint8_t hora[6] = {0xFF};
+    uint8_t posponer = 10;
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    PosponerAlarma(reloj,posponer, ocurrio_evento_suena);
+    ocurrio_evento_suena=false;
+    SimulateSecond(60, ClkTick(reloj));
+    TEST_ASSERT_TRUE(ocurrio_evento_suena);
+}
+

@@ -149,31 +149,33 @@ void ClkActivateAlarma(clk_t reloj,bool estado){
 }
 
 
-void PosponerAlarma(clk_t reloj,uint8_t posponer){
-    memcpy(reloj->posponer ,reloj->alarma, TAMANIO_VECTOR_TIEMPO);
-    reloj->posponer_valida=1;
-    ApagarAlarma(reloj);
-    for(int i=0; i<posponer;i++){
-        reloj->alarma[3]++;
-        if(reloj->alarma[3]==10){
-            reloj->alarma[3]=0;
-            reloj->alarma[2]++;
+void PosponerAlarma(clk_t reloj,uint8_t posponer, bool estado){
+    if(estado){
+        memcpy(reloj->posponer ,reloj->alarma, TAMANIO_VECTOR_TIEMPO);
+        reloj->posponer_valida=1;
+        ApagarAlarma(reloj);
+        for(int i=0; i<posponer;i++){
+            reloj->alarma[3]++;
+            if(reloj->alarma[3]==10){
+                reloj->alarma[3]=0;
+                reloj->alarma[2]++;
 
-        }
-        if(reloj->alarma[2]==6){
-            reloj->alarma[2]=0;
-            reloj->alarma[1]++;
+            }
+            if(reloj->alarma[2]==6){
+                reloj->alarma[2]=0;
+                reloj->alarma[1]++;
 
-        }
-        if(reloj->alarma[1]==10){
-            reloj->alarma[1]=0;
-            reloj->alarma[0]++;
+            }
+            if(reloj->alarma[1]==10){
+                reloj->alarma[1]=0;
+                reloj->alarma[0]++;
 
-        }
-        if(reloj->alarma[0]==2 && reloj->alarma[1]==4){
-            reloj->alarma[0]=0;
-            reloj->alarma[1]=0;
-    
+            }
+            if(reloj->alarma[0]==2 && reloj->alarma[1]==4){
+                reloj->alarma[0]=0;
+                reloj->alarma[1]=0;
+        
+            }
         }
     }
 }
