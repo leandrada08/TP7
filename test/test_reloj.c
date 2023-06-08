@@ -11,11 +11,8 @@ de minutos.
 compactar, con la decena de horas en la primera posición y la unidad de los segundos en la
 última posición del vector.
 Pruebas:
-- La funcion para posponer la alarmr, genera mueve la hora de la alarma una cantidad arbitraria de minutos
-- La funcion para posponer alarma, no modifica la hora original de la alarma
 - La funcion para porponer alarma, frena el buzzer
 - La funcion posponer alarma solo se activa cuando esta sonando la alarma
-
 */
 
 
@@ -31,7 +28,10 @@ Pruebas:
 static bool ocurrio_evento_suena;
 
 void RegistraEventoAlarma(clk_t reloj){
-        ocurrio_evento_suena=true;
+    if(ocurrio_evento_suena!=0){
+        ocurrio_evento_suena=false;
+    }
+    ocurrio_evento_suena=true;
 }
 
 static clk_t reloj;
@@ -213,3 +213,19 @@ void test_alarma_pospone_n_minutos(void){
     ClkGetAlarma(reloj,hora, 6); 
     TEST_ASSERT_EQUAL_UINT8_ARRAY(hora, Alarma_pospuesta, sizeof(Alarma));
 }
+
+
+// La funcion para posponer alarma, no modifica la hora original de la alarma
+/*
+void test_alarma_pospone_no_modifica(void){
+    static const uint8_t Alarma[]={1,2,3,5,0,0};
+    static const uint8_t Alarma_pospuesta[]={1,2,4,5,0,0};
+    uint8_t posponer = 10;
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    SimulateSecond(60, ClkTick(reloj));
+    PosponerAlarma(reloj,posponer);
+    ClkGetAlarma(reloj,hora, 6); 
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(hora, Alarma_pospuesta, sizeof(Alarma));
+}
+*/
