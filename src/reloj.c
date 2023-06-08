@@ -12,6 +12,9 @@ struct clk_s{
     uint8_t alarma[TAMANIO_VECTOR_TIEMPO];
     bool alarma_valida;
 
+    uint8_t posponer[TAMANIO_VECTOR_TIEMPO];
+    bool posponer_valida;
+
     suena_alarma_t gestor_alarma;
 };
 
@@ -30,6 +33,10 @@ void VerificarAlarma(clk_t reloj){
     if(reloj->hora_valida!=0 && reloj->alarma_valida!=0){
         if(memcmp(reloj->hora_actual,reloj->alarma, TAMANIO_VECTOR_TIEMPO)==0){
             reloj->gestor_alarma(reloj);
+            if(reloj->posponer_valida==1){
+                reloj->posponer_valida=0;
+                memcpy(reloj->alarma ,reloj->posponer, TAMANIO_VECTOR_TIEMPO);
+            }
         }
     }
 }
@@ -143,6 +150,9 @@ void ClkActivateAlarma(clk_t reloj,bool estado){
 
 
 void PosponerAlarma(clk_t reloj,uint8_t posponer){
+    memcpy(reloj->posponer ,reloj->alarma, TAMANIO_VECTOR_TIEMPO);
+    reloj->posponer_valida=1;
+    ApagarAlarma(reloj);
     for(int i=0; i<posponer;i++){
         reloj->alarma[3]++;
         if(reloj->alarma[3]==10){

@@ -228,16 +228,16 @@ void test_alarma_pospone_n_minutos(void){
 
 
 // La funcion para posponer alarma, no modifica la hora original de la alarma
-/*
+
 void test_alarma_pospone_no_modifica(void){
     static const uint8_t Alarma[]={1,2,3,5,0,0};
-    static const uint8_t Alarma_pospuesta[]={1,2,4,5,0,0};
+    uint8_t hora[6] = {0xFF};
     uint8_t posponer = 10;
     ocurrio_evento_suena=false;
     ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
     SimulateSecond(60, ClkTick(reloj));
     PosponerAlarma(reloj,posponer);
+    SimulateSecond(60*11, ClkTick(reloj));
     ClkGetAlarma(reloj,hora, 6); 
-    TEST_ASSERT_EQUAL_UINT8_ARRAY(hora, Alarma_pospuesta, sizeof(Alarma));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(hora, Alarma, sizeof(Alarma));
 }
-*/
