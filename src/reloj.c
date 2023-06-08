@@ -29,7 +29,6 @@ void VerificarAlarma(clk_t reloj);
 void VerificarAlarma(clk_t reloj){
     if(reloj->hora_valida!=0 && reloj->alarma_valida!=0){
         if(memcmp(reloj->hora_actual,reloj->alarma, TAMANIO_VECTOR_TIEMPO)==0){
-            printf("%i",0);
             reloj->gestor_alarma(reloj);
         }
     }
@@ -167,4 +166,9 @@ void PosponerAlarma(clk_t reloj,uint8_t posponer){
     
         }
     }
+}
+
+
+void ApagarAlarma(clk_t reloj){
+    reloj->gestor_alarma(reloj);
 }

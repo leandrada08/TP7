@@ -30,8 +30,9 @@ static bool ocurrio_evento_suena;
 void RegistraEventoAlarma(clk_t reloj){
     if(ocurrio_evento_suena!=0){
         ocurrio_evento_suena=false;
+    }else{
+        ocurrio_evento_suena=true;
     }
-    ocurrio_evento_suena=true;
 }
 
 static clk_t reloj;
@@ -196,6 +197,17 @@ void test_alarma_no_suena_desactivada(void){
     ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
     ClkActivateAlarma(reloj,0);
     SimulateSecond(60, ClkTick(reloj));
+    TEST_ASSERT_FALSE(ocurrio_evento_suena);
+}
+
+// Apago la alarma con una funcion externa
+void test_alarma_apaga(void){
+    static const uint8_t Alarma[]={1,2,3,5,0,0};
+    ocurrio_evento_suena=false;
+    ClkSetAlarma(reloj,Alarma,sizeof(Alarma));
+    SimulateSecond(60, ClkTick(reloj));
+    TEST_ASSERT_TRUE(ocurrio_evento_suena);
+    ApagarAlarma(reloj);
     TEST_ASSERT_FALSE(ocurrio_evento_suena);
 }
 
